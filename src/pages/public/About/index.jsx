@@ -503,7 +503,7 @@ Atau klik tombol di bawah ini:
               <section className="p-8 text-center bg-white rounded-lg shadow-sm">
                 <div className="flex justify-center mb-8">
                   <img 
-                    src="/Logo.svg" 
+                    src="/logo-travelaku.png" 
                     alt="TravelAku Logo" 
                     className="object-contain w-48 h-48"
                   />
@@ -522,9 +522,9 @@ Atau klik tombol di bawah ini:
                     </p>
                     <div className="pt-4 mt-4 space-y-2 border-t border-gray-200">
                       <p className="text-gray-500">Dibuat oleh:</p>
-                      <p className="text-xl font-semibold text-primary">Muhammad Hairudin, SE</p>
+                      <p className="text-xl font-semibold text-primary">Muhammad Hairudin</p>
                       <div className="flex gap-2 justify-center items-center text-sm text-gray-500">
-                        <span className="px-3 py-1 rounded-full bg-primary/10">ASN</span>
+                        <span className="px-3 py-1 rounded-full bg-primary/10">ASN'2006</span>
                         <span>•</span>
                         <span className="px-3 py-1 rounded-full bg-primary/10">Frontend Developer</span>
                       </div>

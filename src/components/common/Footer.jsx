@@ -8,13 +8,9 @@ export default function Footer() {
       <Container>
         <div className="flex flex-col items-center">
           {/* Logo & Tagline */}
-          <Link to="/" className="mb-4">
-            <h2 className="font-serif text-2xl font-bold text-white">
-              TravelAku
-            </h2>
-          </Link>
-         {/* Divider */}
-          <div className="mb-6 w-24 h-1 rounded-full bg-secondary/30"></div>
+         
+
+         
 
           {/* Copyright & Credits */}
           <div className="text-center">
@@ -31,7 +27,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="transition-colors text-secondary hover:text-secondary/80"
               >
-                Muhammad Hairudin, SE
+                Muhammad Hairudin
               </a>
             </p>
             <p className="mt-1 text-xs text-gray-400">

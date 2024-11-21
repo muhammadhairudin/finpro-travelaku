@@ -88,90 +88,87 @@ export default function Navbar() {
       <Container>
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex gap-2 items-center group">
+          <Link to="/" className="flex items-center gap-3 group">
             <img 
-              src="/Logo.svg" 
+              src="/logo-travelaku.png"
               alt="TravelAku Logo" 
-              className="w-auto h-8 transition-transform duration-300 group-hover:scale-110"
+              className="h-8 w-auto transition-transform duration-300 group-hover:scale-110"
             />
+            <span className="hidden md:block font-serif text-lg font-bold text-primary">
+              TravelAku
+            </span>
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden gap-6 items-center md:flex">
+          <div className="hidden md:flex items-center gap-8">
             <Link 
               to="/" 
-              className="text-gray-600 transition-all duration-300 hover:text-primary hover:scale-105"
+              className="text-gray-600 font-medium transition-all duration-300 hover:text-primary"
             >
-              Home
+              Beranda
             </Link>
             <Link 
               to="/activities" 
-              className="text-gray-600 transition-all duration-300 hover:text-primary hover:scale-105"
+              className="text-gray-600 font-medium transition-all duration-300 hover:text-primary"
             >
-              Activities
+              Aktivitas
+            </Link>
+            <Link 
+              to="/about" 
+              className="text-gray-600 font-medium transition-all duration-300 hover:text-primary"
+            >
+              Tentang
             </Link>
 
             {user ? (
-              <div className="flex gap-6 items-center">
+              <div className="flex items-center gap-8 pl-4 border-l border-gray-200">
                 {/* Cart */}
                 <Link 
                   to="/cart" 
-                  className="flex gap-1 items-center text-gray-600 transition-all duration-300 hover:text-primary hover:scale-105"
+                  className="flex items-center gap-1 text-gray-600 font-medium transition-all duration-300 hover:text-primary"
                 >
-                  Cart {cartItems.length > 0 && (
-                    <span className="px-2 py-1 text-xs text-white rounded-full bg-primary">
+                  Keranjang {cartItems.length > 0 && (
+                    <span className="px-2 py-0.5 text-xs text-white rounded-full bg-primary">
                       {cartItems.length}
                     </span>
                   )}
                 </Link>
 
                 {/* User Menu */}
-                <div className="flex gap-6 items-center">
+                <div className="flex items-center gap-8">
                   <Link 
                     to="/transactions" 
-                    className="text-gray-600 transition-all duration-300 hover:text-primary hover:scale-105"
+                    className="text-gray-600 font-medium transition-all duration-300 hover:text-primary"
                   >
-                    Transactions
+                    Transaksi
                   </Link>
                   <Link 
                     to="/profile" 
-                    className="text-gray-600 transition-all duration-300 hover:text-primary hover:scale-105"
+                    className="text-gray-600 font-medium transition-all duration-300 hover:text-primary"
                   >
-                    My Profile
-                  </Link>
-                  <Link 
-                    to="/about" 
-                    className="text-gray-600 transition-all duration-300 hover:text-primary hover:scale-105"
-                  >
-                    About
+                    Profil
                   </Link>
                   <button
                     onClick={() => dispatch(clearAuth())}
-                    className="px-4 py-2 text-red-600 rounded-lg transition-all duration-300 hover:bg-red-50 hover:scale-105"
+                    className="px-4 py-2 text-red-600 font-medium rounded-lg transition-all duration-300 hover:bg-red-50"
                   >
-                    Logout
+                    Keluar
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="flex gap-4">
-                <Link 
-                  to="/about" 
-                  className="text-gray-600 transition-all duration-300 hover:text-primary hover:scale-105"
-                >
-                  About
-                </Link>
+              <div className="flex items-center gap-4 pl-4 border-l border-gray-200">
                 <Link 
                   to="/login" 
-                  className="px-6 py-2 text-white rounded-lg transition-all duration-300 bg-primary hover:bg-primary/90 hover:scale-105"
+                  className="px-4 py-2 text-primary font-medium rounded-lg transition-all duration-300 hover:bg-primary/5"
                 >
-                  Sign In
+                  Masuk
                 </Link>
                 <Link 
                   to="/register" 
-                  className="px-6 py-2 rounded-lg border-2 transition-all duration-300 text-primary border-primary hover:bg-primary hover:text-white hover:scale-105"
+                  className="px-4 py-2 text-white font-medium bg-primary rounded-lg transition-all duration-300 hover:bg-primary/90"
                 >
-                  Sign Up
+                  Daftar
                 </Link>
               </div>
             )}
@@ -192,87 +189,80 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden">
-            <div className="px-4 pt-2 pb-3 space-y-1">
+          <div className="md:hidden border-t border-gray-200">
+            <div className="py-2 space-y-1">
               <Link 
                 to="/"
-                className="block py-2 text-gray-600 hover:text-primary"
+                className="block px-4 py-2 text-gray-600 hover:bg-gray-50"
                 onClick={() => setIsOpen(false)}
               >
-                Home
+                Beranda
               </Link>
               <Link 
                 to="/activities"
-                className="block py-2 text-gray-600 hover:text-primary"
+                className="block px-4 py-2 text-gray-600 hover:bg-gray-50"
                 onClick={() => setIsOpen(false)}
               >
-                Activities
+                Aktivitas
+              </Link>
+              <Link 
+                to="/about"
+                className="block px-4 py-2 text-gray-600 hover:bg-gray-50"
+                onClick={() => setIsOpen(false)}
+              >
+                Tentang
               </Link>
 
               {user ? (
                 <>
                   <Link 
                     to="/cart" 
-                    className="block py-2 text-gray-600 hover:text-primary"
+                    className="block px-4 py-2 text-gray-600 hover:bg-gray-50"
                     onClick={() => setIsOpen(false)}
                   >
-                    Cart {cartItems.length > 0 && `(${cartItems.length})`}
+                    Keranjang {cartItems.length > 0 && `(${cartItems.length})`}
                   </Link>
-                  <div className="pt-4 mt-4 space-y-2 border-t border-gray-200">
+                  <div className="pt-2 mt-2 border-t border-gray-200">
                     <Link 
                       to="/transactions" 
-                      className="block py-2 text-gray-600 hover:text-primary"
+                      className="block px-4 py-2 text-gray-600 hover:bg-gray-50"
                       onClick={() => setIsOpen(false)}
                     >
-                      Transactions
+                      Transaksi
                     </Link>
                     <Link 
                       to="/profile" 
-                      className="block py-2 text-gray-600 hover:text-primary"
+                      className="block px-4 py-2 text-gray-600 hover:bg-gray-50"
                       onClick={() => setIsOpen(false)}
                     >
-                      My Profile
-                    </Link>
-                    <Link 
-                      to="/about" 
-                      className="block py-2 text-gray-600 hover:text-primary"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      About
+                      Profil
                     </Link>
                     <button
                       onClick={() => {
                         dispatch(clearAuth())
                         setIsOpen(false)
                       }}
-                      className="py-2 w-full text-left text-red-600 hover:text-red-700"
+                      className="block px-4 py-2 w-full text-left text-red-600 hover:bg-red-50"
                     >
-                      Logout
+                      Keluar
                     </button>
                   </div>
                 </>
               ) : (
-                <div className="flex flex-col gap-4 pt-4 mt-4 border-t border-gray-200">
-                  <Link 
-                    to="/about" 
-                    className="block py-2 text-gray-600 hover:text-primary"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    About
-                  </Link>
+                <div className="flex flex-col gap-2 p-4 mt-2 border-t border-gray-200">
                   <Link 
                     to="/login" 
-                    className="btn btn-primary"
+                    className="w-full px-4 py-2 text-center text-primary font-medium rounded-lg border border-primary"
                     onClick={() => setIsOpen(false)}
                   >
-                    Sign In
+                    Masuk
                   </Link>
                   <Link 
                     to="/register" 
-                    className="btn btn-outline"
+                    className="w-full px-4 py-2 text-center text-white font-medium bg-primary rounded-lg"
                     onClick={() => setIsOpen(false)}
                   >
-                    Sign Up
+                    Daftar
                   </Link>
                 </div>
               )}
