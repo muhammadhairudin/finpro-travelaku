@@ -4,7 +4,7 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline'
 import api from '../../../../lib/axios'
 
 export default function PaymentMethods({ selected, onSelect }) {
-  const [expandedMethod, setExpandedMethod] = useState('bank')
+  const [expandedMethod] = useState(null)
   const [paymentMethods, setPaymentMethods] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -121,6 +121,15 @@ export default function PaymentMethods({ selected, onSelect }) {
 }
 
 PaymentMethods.propTypes = {
-  selected: PropTypes.object,
-  onSelect: PropTypes.func.isRequired,
+  selected: PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string,
+    imageUrl: PropTypes.string,
+    virtual_account_number: PropTypes.string
+  }),
+  onSelect: PropTypes.func.isRequired
+}
+
+PaymentMethods.defaultProps = {
+  selected: null
 } 

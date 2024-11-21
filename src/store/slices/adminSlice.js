@@ -97,7 +97,7 @@ const calculateAmount = (items = []) => {
 
 export const updateUserRole = createAsyncThunk(
   'admin/updateUserRole',
-  async ({ userId, role }, { rejectWithValue }) => {
+  async ({ _userId, role }, { rejectWithValue }) => {
     try {
       const response = await api.put(`/api/v1/update-profile`, { role })
       return response.data

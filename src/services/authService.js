@@ -1,3 +1,5 @@
+/* global localStorage */
+
 import axiosInstance from '../lib/axios'
 
 export const authService = {

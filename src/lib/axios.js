@@ -3,6 +3,7 @@ import axios from 'axios'
 const baseURL = 'https://travel-journal-api-bootcamp.do.dibimbing.id'
 const apiKey = '24405e01-fbc1-45a5-9f5a-be13afcd757c'
 
+/* global localStorage, window */
 const axiosInstance = axios.create({
   baseURL,
   headers: {
@@ -42,4 +43,5 @@ axiosInstance.interceptors.response.use(
   }
 )
 
+export { axiosInstance }
 export default axiosInstance 

@@ -1,25 +1,11 @@
+import React from 'react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline'
 import { useDispatch } from 'react-redux'
 import { updateTransactionProof } from '../../../../store/slices/transactionSlice'
-import api from '../../../../lib/axios'
-
-const statusColors = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  waiting_confirmation: 'bg-blue-100 text-blue-800',
-  success: 'bg-green-100 text-green-800',
-  rejected: 'bg-red-100 text-red-800',
-  cancelled: 'bg-gray-100 text-gray-800'
-}
-
-const statusLabels = {
-  pending: 'Menunggu Pembayaran',
-  waiting_confirmation: 'Menunggu Konfirmasi Admin',
-  success: 'Pembayaran Dikonfirmasi',
-  rejected: 'Pembayaran Ditolak',
-  cancelled: 'Transaksi Dibatalkan'
-}
+import { axiosInstance as api } from '../../../../lib/axios'
+import { toast } from 'react-hot-toast'
 
 const getTransactionStatus = (transaction) => {
   if (transaction.status === 'pending') {
@@ -90,10 +76,10 @@ export default function TransactionCard({ transaction }) {
         proofPaymentUrl: uploadResponse.data.url
       })).unwrap()
 
-      alert('Bukti pembayaran berhasil diupload')
+      toast.success('Bukti pembayaran berhasil diupload')
     } catch (error) {
       console.error('Upload failed:', error)
-      alert(error.message || 'Gagal mengupload bukti pembayaran')
+      toast.error(error.message || 'Gagal mengupload bukti pembayaran')
     } finally {
       setIsUploading(false)
     }

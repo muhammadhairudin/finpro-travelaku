@@ -1,3 +1,5 @@
+/* global document, window */
+import React from 'react'
 import Container from '../../../components/common/Container'
 import Mermaid from '../../../components/common/Mermaid'
 import Wireframes from './components/Wireframes'
@@ -6,7 +8,7 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline'
 
 export default function About() {
   const userFlowChart = `
-    flowchart TD
+    graph TD
       A[Browse Aktivitas] --> B{Sudah Login?}
       B -->|Ya| C[Pilih Aktivitas]
       B -->|Tidak| D[Login/Register]
@@ -19,18 +21,13 @@ export default function About() {
       I -->|Disetujui| J[Booking Berhasil]
       I -->|Ditolak| K[Pembayaran Ditolak]
 
-      classDef default fill:#f9f9f9,stroke:#4F46E5,stroke-width:2px;
-      classDef decision fill:#4F46E5,stroke:#4F46E5,color:white;
-      classDef success fill:#22C55E,stroke:#22C55E,color:white;
-      classDef error fill:#EF4444,stroke:#EF4444,color:white;
-      
-      class B decision;
-      class J success;
-      class K error;
+      style B fill:#4F46E5,stroke:#4F46E5,color:white
+      style J fill:#22C55E,stroke:#22C55E,color:white
+      style K fill:#EF4444,stroke:#EF4444,color:white
   `
 
   const adminFlowChart = `
-    flowchart TD
+    graph TD
       A[Login sebagai Admin] --> B[Dashboard]
       B --> C[Manajemen Data]
       C --> D[Kelola Aktivitas]
@@ -42,14 +39,9 @@ export default function About() {
       I -->|Valid| J[Setujui Transaksi]
       I -->|Tidak Valid| K[Tolak Transaksi]
 
-      classDef default fill:#f9f9f9,stroke:#4F46E5,stroke-width:2px;
-      classDef decision fill:#4F46E5,stroke:#4F46E5,color:white;
-      classDef success fill:#22C55E,stroke:#22C55E,color:white;
-      classDef error fill:#EF4444,stroke:#EF4444,color:white;
-      
-      class I decision;
-      class J success;
-      class K error;
+      style I fill:#4F46E5,stroke:#4F46E5,color:white
+      style J fill:#22C55E,stroke:#22C55E,color:white
+      style K fill:#EF4444,stroke:#EF4444,color:white
   `
 
   // Timeline data dengan tanggal yang diupdate
@@ -88,6 +80,7 @@ export default function About() {
       week: 'Minggu 4 (17-24 November 2024)',
       tasks: [
         'Quality Assurance dan testing menyeluruh',
+        'ESLint & code quality checks',
         'Optimasi performa dan responsive design',
         'Deployment ke production',
         'Dokumentasi kode dan API',
@@ -107,8 +100,8 @@ travelaku/                      # Root project directory
 ├── public/                     # Static assets directory
 │   ├── Logo.svg               # Application logo
 │   ├── favicon.ico            # Browser favicon
-│   └── wireframes/            # UI/UX wireframe images
-├── docs/                       # Project documentation
+│   └─ wireframes/            # UI/UX wireframe images
+├─ docs/                       # Project documentation
 │   ├── tahap-1-setup.md       # Setup documentation
 │   └── tahap-2-routing.md     # Routing documentation
 └── src/                       # Source code directory
@@ -149,7 +142,7 @@ Setiap folder memiliki tanggung jawab spesifik yang memudahkan:
   `
 
   // State untuk FAQ
-  const [question] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
   const [expandedFaq, setExpandedFaq] = useState(null)
 
   // Data FAQ default
@@ -330,6 +323,108 @@ Setiap folder memiliki tanggung jawab spesifik yang memudahkan:
           message: string,
           data: any
         }`
+    },
+    {
+      id: 8,
+      question: 'Bagaimana cara mengakses aplikasi yang sudah di-deploy?',
+      answer: `Aplikasi TravelAku dapat diakses melalui:
+
+• URL: https://travelaku-fehca4mef-muhammads-projects-24d2d906.vercel.app
+• Repository: https://github.com/muhammadhairudin/finpro-travelaku
+
+Deployment menggunakan platform Vercel dengan fitur:
+• Continuous Deployment dari GitHub
+• SSL/HTTPS otomatis
+• CDN global
+• Analytics & monitoring
+
+Untuk menjalankan locally:
+1. Clone repository
+2. Install dependencies: npm install
+3. Setup .env sesuai environment variables
+4. Run development: npm run dev
+5. Build: npm run build`
+    },
+    {
+      id: 9,
+      question: 'Apa itu ESLint dan bagaimana cara menjalankannya di project ini?',
+      answer: `ESLint adalah tools untuk static code analysis yang membantu:
+
+• Menemukan masalah dalam kode JavaScript
+• Memastikan konsistensi gaya penulisan kode
+• Mencegah bugs dan anti-patterns
+• Menegakkan best practices
+
+Cara menjalankan ESLint di project ini:
+1. Install dependencies:
+   npm install -D eslint eslint-plugin-react
+
+2. Jalankan ESLint:
+   npm run lint
+   
+3. Untuk auto-fix:
+   npm run lint:fix
+
+Konfigurasi ESLint ada di file .eslintrc.js dengan rules:
+• React hooks rules
+• Import/export rules
+• Code style rules
+• Error prevention rules
+
+Manfaat penggunaan ESLint:
+• Kode lebih konsisten dan mudah dibaca
+• Mengurangi potensi bugs
+• Memudahkan kolaborasi tim
+• Meningkatkan kualitas kode`
+    },
+    {
+      id: 10,
+      question: 'Bagaimana cara mengakses dokumentasi komponen dan fitur TravelAku?',
+      answer: `TravelAku menyediakan halaman dokumentasi lengkap yang dapat diakses di:
+
+• URL: /docs
+
+Dokumentasi mencakup:
+1. Components
+   • Common Components (Container, ErrorBoundary, dll)
+   • Admin Components (AdminNavbar, dll)
+   • Transaction Components (PaymentSummary, dll)
+
+2. Pages
+   • Public Pages (Home, Activities, dll)
+   • Admin Pages (Dashboard, dll)
+
+3. Layouts
+   • RootLayout
+   • AdminLayout
+   • dll
+
+4. Services
+   • authService
+   • activityService
+   • dll
+
+Fitur Dokumentasi:
+• Pencarian komponen/fitur
+• Detail props dan penggunaan
+• Lokasi file
+• Dependencies
+• Contoh implementasi
+• Methods yang tersedia
+
+Dokumentasi ini berguna untuk:
+• Developer yang ingin berkontribusi
+• Tim yang ingin memahami struktur project
+• Referensi penggunaan komponen
+• Maintenance dan pengembangan
+
+Untuk melihat dokumentasi lengkap, silakan kunjungi:
+<a href="/docs" class="text-primary hover:underline">Halaman Dokumentasi TravelAku</a>
+
+Atau klik tombol di bawah ini:
+<a href="/docs" class="inline-block px-4 py-2 mt-2 text-sm font-medium text-white rounded-lg bg-primary hover:bg-primary/90">
+  Lihat Dokumentasi Lengkap →
+</a>`
     }
   ]
 
@@ -349,11 +444,10 @@ Setiap folder memiliki tanggung jawab spesifik yang memudahkan:
       </button>
       {expandedFaq === faq.id && (
         <div className="pb-4 max-w-none prose prose-sm">
-          {faq.answer.split('\n').map((paragraph, index) => (
-            <p key={index} className="text-gray-600 whitespace-pre-wrap">
-              {paragraph}
-            </p>
-          ))}
+          <div 
+            className="text-gray-600 whitespace-pre-wrap"
+            dangerouslySetInnerHTML={{ __html: faq.answer }}
+          />
         </div>
       )}
     </div>
@@ -380,6 +474,7 @@ Setiap folder memiliki tanggung jawab spesifik yang memudahkan:
                   { id: 'structure', label: 'Struktur Project' },
                   { id: 'wireframes', label: 'Wireframes' },
                   { id: 'timeline', label: 'Timeline' },
+                  { id: 'deployment', label: 'Deployment & Repository' },
                   { id: 'notes', label: 'Catatan Penting' },
                   { id: 'faq', label: 'FAQ' },
                 ].map((item) => (
@@ -630,7 +725,110 @@ Setiap folder memiliki tanggung jawab spesifik yang memudahkan:
               </div>
             </section>
 
-            {/* 12. Catatan Penting */}
+            {/* 12. Deployment & Repository */}
+            <section id="deployment" className="p-8 bg-white rounded-lg shadow-sm">
+              <h2 className="mb-6 text-2xl font-bold text-center">Deployment & Repository</h2>
+              
+              <div className="space-y-8">
+                {/* Repository Info */}
+                <div className="p-6 rounded-lg border">
+                  <h3 className="mb-4 text-lg font-bold text-primary">Repository</h3>
+                  <div className="flex gap-4 items-center mb-4">
+                    <img 
+                      src="/github-mark.png" 
+                      alt="GitHub Logo" 
+                      className="object-contain w-8 h-8"
+                    />
+                    <a 
+                      href="https://github.com/muhammadhairudin/finpro-travelaku"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      github.com/muhammadhairudin/finpro-travelaku
+                    </a>
+                  </div>
+                  <div className="p-4 bg-gray-50 rounded">
+                    <h4 className="mb-2 font-medium">Branch Utama:</h4>
+                    <div className="flex gap-2 items-center">
+                      <span className="px-3 py-1 text-sm rounded-full bg-primary/10 text-primary">main</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Deployment Info */}
+                <div className="p-6 rounded-lg border">
+                  <h3 className="mb-4 text-lg font-bold text-primary">Deployment</h3>
+                  
+                  <div className="mb-6">
+                    <img 
+                      src="/vercel-deploy.png" 
+                      alt="Vercel Deployment" 
+                      className="w-full rounded-lg shadow-md"
+                    />
+                  </div>
+
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div>
+                      <h4 className="mb-3 font-medium">Deployment URL:</h4>
+                      <a 
+                        href="https://travelaku-fehca4mef-muhammads-projects-24d2d906.vercel.app"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block px-4 py-2 text-sm text-white bg-black rounded-lg hover:bg-gray-800"
+                      >
+                        travelaku.vercel.app ↗
+                      </a>
+                    </div>
+
+                    <div>
+                      <h4 className="mb-3 font-medium">Platform:</h4>
+                      <ul className="space-y-2 text-sm">
+                        <li className="flex gap-2 items-center">
+                          <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                          Deploy menggunakan Vercel (vercel.com)
+                        </li>
+                        <li className="flex gap-2 items-center">
+                          <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                          Continuous Deployment dari GitHub
+                        </li>
+                        <li className="flex gap-2 items-center">
+                          <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                          Auto SSL/HTTPS & Global CDN
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Environment Setup */}
+                <div className="p-6 rounded-lg border">
+                  <h3 className="mb-4 text-lg font-bold text-primary">Environment Variables</h3>
+                  <div className="p-4 font-mono text-sm bg-gray-50 rounded">
+                    <p className="mb-2 text-gray-500"># .env</p>
+                    <div className="space-y-1">
+                      <p>VITE_API_URL=https://travel-journal-api-bootcamp.do.dibimbing.id</p>
+                      <p>VITE_API_KEY=24405e01-fbc1-45a5-9f5a-be13afcd757c</p>
+                      <p>NODE_VERSION=16.x</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Deployment Steps */}
+                <div className="p-6 rounded-lg border">
+                  <h3 className="mb-4 text-lg font-bold text-primary">Langkah Deployment</h3>
+                  <ol className="pl-4 space-y-2 list-decimal">
+                    <li className="text-gray-600">Push kode ke repository GitHub</li>
+                    <li className="text-gray-600">Login ke Vercel dan hubungkan dengan repository</li>
+                    <li className="text-gray-600">Konfigurasi environment variables di Vercel</li>
+                    <li className="text-gray-600">Deploy otomatis setiap push ke branch main</li>
+                    <li className="text-gray-600">Monitor performa melalui Vercel Analytics</li>
+                  </ol>
+                </div>
+              </div>
+            </section>
+
+            {/* 13. Catatan Penting */}
             <section id="notes" className="p-8 bg-white rounded-lg shadow-sm">
               <h2 className="mb-6 text-2xl font-bold text-center">Catatan Penting</h2>
               <div className="space-y-4">
@@ -673,17 +871,39 @@ Setiap folder memiliki tanggung jawab spesifik yang memudahkan:
                     <li>Backup data secara berkala</li>
                   </ul>
                 </div>
+
+                <div className="p-4 bg-indigo-50 rounded-lg">
+                  <h3 className="mb-2 font-bold text-indigo-800">Code Quality Tools</h3>
+                  <ul className="pl-6 space-y-1 list-disc text-indigo-700">
+                    <li>ESLint untuk static code analysis</li>
+                    <li>Prettier untuk code formatting</li>
+                    <li>TypeScript untuk type checking</li>
+                    <li>Husky untuk pre-commit hooks</li>
+                  </ul>
+                </div>
               </div>
             </section>
 
-            {/* 13. FAQ */}
+            {/* 14. FAQ */}
             <section id="faq" className="p-8 bg-white rounded-lg shadow-sm">
               <h2 className="mb-8 text-2xl font-bold text-center">FAQ</h2>
+              
+              {/* Tambahkan search box */}
+              <div className="mb-6">
+                <input
+                  type="text"
+                  placeholder="Cari FAQ..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="px-4 py-2 w-full rounded-lg border focus:outline-none focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
+
               <div className="divide-y divide-gray-200">
                 {defaultFaqs
                   .filter(faq => 
-                    faq.question.toLowerCase().includes(question.toLowerCase()) ||
-                    faq.answer.toLowerCase().includes(question.toLowerCase())
+                    faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
                   )
                   .map(renderFaq)}
               </div>

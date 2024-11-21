@@ -39,7 +39,7 @@ export const updateTransactionProof = createAsyncThunk(
         throw new Error('URL bukti pembayaran tidak valid')
       }
 
-      const response = await api.post(
+      await api.post(
         `/api/v1/update-transaction-proof-payment/${transactionId}`,
         { proofPaymentUrl }
       )
@@ -57,11 +57,11 @@ export const updateTransactionStatus = createAsyncThunk(
   'transaction/updateStatus',
   async ({ transactionId, status }, { rejectWithValue }) => {
     try {
-      const response = await api.post(
+      await api.post(
         `/api/v1/update-transaction-status/${transactionId}`,
         { status }
       )
-      return response.data.data
+      return { transactionId, status }
     } catch (error) {
       return rejectWithValue(error.message)
     }
