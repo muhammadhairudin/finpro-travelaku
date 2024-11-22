@@ -918,10 +918,10 @@ Atau klik tombol di bawah ini:
             </button>
 
             {/* Copyright */}
-            <div className="pt-8 text-sm text-center text-gray-500 border-t">
+            {/* <div className="pt-8 text-sm text-center text-gray-500 border-t">
               <p>© 2024 TravelAku. Final Project Bootcamp Frontend Dibimbing Batch 19.</p>
               <p className="mt-1">Created with ❤️ by Muhammad Hairudin, SE</p>
-            </div>
+            </div> */}
           </div>
         </div>
       </Container>
