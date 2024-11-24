@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { CloudArrowUpIcon } from '@heroicons/react/24/outline'
 import { useDispatch } from 'react-redux'
-import { updateTransactionProof } from '../../../../store/slices/transactionSlice'
+import { 
+  updateTransactionProof,
+  fetchTransactions
+} from '../../../../store/slices/transactionSlice'
 import { axiosInstance as api } from '../../../../lib/axios'
 import { toast } from 'react-hot-toast'
 
@@ -63,20 +66,25 @@ export default function TransactionCard({ transaction }) {
         }
       })
 
-      const imageUrl = uploadResponse.data.imageUrl
+      if (!uploadResponse.data.url) {
+        throw new Error('Gagal mendapatkan URL gambar')
+      }
 
       // 2. Update bukti pembayaran transaksi
-      await api.post(`/api/v1/update-transaction-proof-payment/${transaction.id}`, {
-        proofPaymentUrl: imageUrl
-      })
+      const proofPaymentUrl = uploadResponse.data.url
+      
+      await dispatch(updateTransactionProof({
+        transactionId: transaction.id,
+        proofPaymentUrl: proofPaymentUrl
+      })).unwrap()
 
-      // 3. Refresh data
-      if (onUpdate) onUpdate()
+      // 3. Refresh data transaksi
+      await dispatch(fetchTransactions())
       
       toast.success('Bukti pembayaran berhasil diupload')
     } catch (error) {
       console.error('Upload failed:', error)
-      toast.error('Gagal mengupload bukti pembayaran')
+      toast.error(error.message || 'Gagal mengupload bukti pembayaran')
     } finally {
       setIsUploading(false)
     }

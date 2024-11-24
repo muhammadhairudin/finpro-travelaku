@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, Link } from 'react-router-dom'
 import Container from '../../../components/common/Container'
 import ActivityFilters from './components/ActivityFilters'
+import ActivityCard from './components/ActivityCard'
 import LoadingSpinner from '../../../components/common/LoadingSpinner'
 import Pagination from '../../../components/common/Pagination'
 import api from '../../../lib/axios'
@@ -134,45 +135,22 @@ export default function Activities() {
               {activities
                 .slice((currentPage - 1) * 12, currentPage * 12)
                 .map((activity) => (
-                  <div 
+                  <Link 
                     key={activity.id}
-                    className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 transition-transform hover:-translate-y-1 duration-300"
+                    to={`/activities/${activity.id}`}
+                    className="block"
                   >
-                    {/* Activity Image */}
-                    <div className="aspect-[4/3] relative">
-                      <img
-                        src={activity.imageUrls?.[0] || '/placeholder-image.jpg'}
-                        alt={activity.title}
-                        className="absolute inset-0 w-full h-full object-cover"
-                      />
-                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-semibold">
-                        Rp {activity.price?.toLocaleString('id-ID')}
-                      </div>
-                    </div>
-
-                    {/* Activity Info */}
-                    <div className="p-4">
-                      <h3 className="font-medium text-lg mb-2 line-clamp-1">
-                        {activity.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                        {activity.description}
-                      </p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-500">
-                          {activity.location}
-                        </span>
-                        <div className="flex items-center gap-1">
-                          <span className="text-sm font-medium text-yellow-500">
-                            ★ {activity.rating || '0'}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            ({activity.total_reviews || '0'})
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    <ActivityCard
+                      id={activity.id}
+                      title={activity.title}
+                      description={activity.description}
+                      imageUrl={activity.imageUrls?.[0]}
+                      price={activity.price}
+                      rating={activity.rating}
+                      location={activity.location}
+                      totalReviews={activity.total_reviews}
+                    />
+                  </Link>
                 ))}
             </div>
 

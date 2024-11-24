@@ -35,19 +35,27 @@ export const updateTransactionProof = createAsyncThunk(
   'transaction/updateProof',
   async ({ transactionId, proofPaymentUrl }, { rejectWithValue }) => {
     try {
-      if (typeof proofPaymentUrl !== 'string') {
+      // Pastikan URL valid
+      if (!proofPaymentUrl) {
         throw new Error('URL bukti pembayaran tidak valid')
       }
 
-      await api.post(
+      // Update bukti pembayaran
+      const response = await api.post(
         `/api/v1/update-transaction-proof-payment/${transactionId}`,
         { proofPaymentUrl }
       )
 
-      const updatedTransactions = await api.get('/api/v1/my-transactions')
-      return updatedTransactions.data.data
+      // Jika berhasil, fetch ulang data transaksi
+      if (response.data.status === 'OK') {
+        const updatedTransactions = await api.get('/api/v1/my-transactions')
+        return updatedTransactions.data.data
+      }
+
+      throw new Error('Gagal update bukti pembayaran')
     } catch (error) {
-      return rejectWithValue(error.response?.data || error.message)
+      console.error('Update proof error:', error)
+      return rejectWithValue(error.message || 'Gagal update bukti pembayaran')
     }
   }
 )
