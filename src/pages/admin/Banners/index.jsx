@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Container from '../../../components/common/Container'
 import LoadingSpinner from '../../../components/common/LoadingSpinner'
 import { fetchAllBanners, createBanner, updateBanner, deleteBanner } from '../../../store/slices/adminSlice'
-import { PlusIcon } from '@heroicons/react/24/outline'
+import { PlusIcon, PencilIcon, TrashIcon, PhotoIcon } from '@heroicons/react/24/outline'
 import BannerModal from './components/BannerModal'
 
 export default function AdminBanners() {
@@ -126,15 +126,17 @@ export default function AdminBanners() {
                       setShowModal(true)
                       setSubmitError(null)
                     }}
-                    className="text-blue-600 hover:text-blue-700"
+                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                    title="Edit"
                   >
-                    Edit
+                    <PencilIcon className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => handleDelete(banner.id)}
-                    className="text-red-600 hover:text-red-700"
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Hapus"
                   >
-                    Hapus
+                    <TrashIcon className="w-5 h-5" />
                   </button>
                 </div>
               </div>

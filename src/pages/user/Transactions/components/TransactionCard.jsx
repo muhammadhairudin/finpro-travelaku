@@ -49,37 +49,34 @@ export default function TransactionCard({ transaction }) {
   const [isUploading, setIsUploading] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
 
-  const handleProofUpload = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-
+  const handleUploadProof = async (file) => {
     try {
       setIsUploading(true)
-
-      // 1. Upload image terlebih dahulu
+      
+      // 1. Upload gambar dulu
       const formData = new FormData()
       formData.append('image', file)
-
+      
       const uploadResponse = await api.post('/api/v1/upload-image', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       })
 
-      if (!uploadResponse.data?.url) {
-        throw new Error('Gagal mengupload gambar')
-      }
+      const imageUrl = uploadResponse.data.imageUrl
 
-      // 2. Update bukti pembayaran dengan URL gambar
-      await dispatch(updateTransactionProof({
-        transactionId: transaction.id,
-        proofPaymentUrl: uploadResponse.data.url
-      })).unwrap()
+      // 2. Update bukti pembayaran transaksi
+      await api.post(`/api/v1/update-transaction-proof-payment/${transaction.id}`, {
+        proofPaymentUrl: imageUrl
+      })
 
+      // 3. Refresh data
+      if (onUpdate) onUpdate()
+      
       toast.success('Bukti pembayaran berhasil diupload')
     } catch (error) {
       console.error('Upload failed:', error)
-      toast.error(error.message || 'Gagal mengupload bukti pembayaran')
+      toast.error('Gagal mengupload bukti pembayaran')
     } finally {
       setIsUploading(false)
     }
@@ -146,7 +143,12 @@ export default function TransactionCard({ transaction }) {
               <input
                 type="file"
                 accept="image/*"
-                onChange={handleProofUpload}
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) {
+                    handleUploadProof(file)
+                  }
+                }}
                 className="hidden"
                 disabled={isUploading}
               />

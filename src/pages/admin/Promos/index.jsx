@@ -63,7 +63,7 @@ export default function AdminPromos() {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="mb-2 text-2xl font-bold text-gray-900">
             Manajemen Promo
           </h1>
           <p className="text-gray-600">
@@ -75,7 +75,7 @@ export default function AdminPromos() {
             setSelectedPromo(null)
             setShowModal(true)
           }}
-          className="btn btn-primary gap-2"
+          className="gap-2 btn btn-primary"
         >
           <PlusIcon className="w-5 h-5" />
           Tambah Promo
@@ -89,16 +89,16 @@ export default function AdminPromos() {
           placeholder="Cari promo..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:w-96 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="px-4 py-2 w-full rounded-lg border border-gray-300 md:w-96 focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
       </div>
 
       {/* Promos Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredPromos.map((promo) => (
           <div 
             key={promo.id}
-            className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100"
+            className="overflow-hidden bg-white rounded-lg border border-gray-100 shadow-sm"
           >
             {/* Promo Image */}
             <div className="aspect-[16/9] relative">
@@ -106,15 +106,15 @@ export default function AdminPromos() {
                 <img
                   src={promo.imageUrl}
                   alt={promo.title}
-                  className="w-full h-full object-cover"
+                  className="object-cover w-full h-full"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                <div className="flex justify-center items-center w-full h-full bg-gray-100">
                   <PhotoIcon className="w-16 h-16 text-gray-400" />
                 </div>
               )}
               {/* Discount Badge */}
-              <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+              <div className="absolute top-4 right-4 px-3 py-1 text-sm font-semibold text-white bg-red-500 rounded-full">
                 Hemat Rp {promo.promo_discount_price.toLocaleString('id-ID')}
               </div>
             </div>
@@ -122,15 +122,15 @@ export default function AdminPromos() {
             {/* Promo Info */}
             <div className="p-4">
               <div className="flex justify-between items-start mb-2">
-                <h3 className="font-medium text-lg text-gray-900">
+                <h3 className="text-lg font-medium text-gray-900">
                   {promo.title}
                 </h3>
-                <span className="text-sm font-mono bg-primary/5 text-primary px-2 py-1 rounded">
+                <span className="px-2 py-1 font-mono text-sm rounded bg-primary/5 text-primary">
                   {promo.promo_code}
                 </span>
               </div>
               
-              <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+              <p className="mb-4 text-sm text-gray-600 line-clamp-2">
                 {promo.description}
               </p>
 
@@ -154,16 +154,16 @@ export default function AdminPromos() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 mt-4">
+              <div className="flex gap-2 justify-end mt-4">
                 <button
                   onClick={() => handleEdit(promo)}
-                  className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                  className="p-2 text-blue-600 rounded-lg hover:bg-blue-50"
                 >
                   <PencilIcon className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => handleDelete(promo.id)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                  className="p-2 text-red-600 rounded-lg hover:bg-red-50"
                 >
                   <TrashIcon className="w-5 h-5" />
                 </button>

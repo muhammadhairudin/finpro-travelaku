@@ -5,18 +5,52 @@ import Container from '../../../components/common/Container'
 import { fetchTransactions } from '../../../store/slices/transactionSlice'
 import LoadingSpinner from '../../../components/common/LoadingSpinner'
 import TransactionCard from './components/TransactionCard'
-import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline'
+import { MagnifyingGlassIcon, FunnelIcon, ClockIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
 
 const ITEMS_PER_PAGE = 5
 
 const statusOptions = [
   { value: '', label: 'Semua Status' },
   { value: 'pending', label: 'Menunggu Pembayaran' },
-  { value: 'waiting_confirmation', label: 'Menunggu Konfirmasi Admin' },
+  { value: 'waiting_confirmation', label: 'Menunggu Konfirmasi' },
   { value: 'success', label: 'Pembayaran Dikonfirmasi' },
   { value: 'rejected', label: 'Pembayaran Ditolak' },
   { value: 'cancelled', label: 'Transaksi Dibatalkan' }
 ]
+
+// Definisikan status mapping
+const statusMap = {
+  pending: {
+    label: 'Menunggu Pembayaran',
+    color: 'text-yellow-600',
+    bgColor: 'bg-yellow-50',
+    icon: <ClockIcon className="w-5 h-5" />
+  },
+  waiting_confirmation: {
+    label: 'Menunggu Konfirmasi',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-50',
+    icon: <ClockIcon className="w-5 h-5" />
+  },
+  success: {
+    label: 'Pembayaran Dikonfirmasi',
+    color: 'text-green-600',
+    bgColor: 'bg-green-50',
+    icon: <CheckCircleIcon className="w-5 h-5" />
+  },
+  failed: {
+    label: 'Pembayaran Ditolak',
+    color: 'text-red-600',
+    bgColor: 'bg-red-50',
+    icon: <XCircleIcon className="w-5 h-5" />
+  },
+  cancelled: {
+    label: 'Transaksi Dibatalkan',
+    color: 'text-gray-600',
+    bgColor: 'bg-gray-50',
+    icon: <XCircleIcon className="w-5 h-5" />
+  }
+}
 
 export default function Transactions() {
   const dispatch = useDispatch()
@@ -158,13 +192,22 @@ export default function Transactions() {
     console.log('Filtered Transactions:', filteredTransactions)
   }, [searchTerm, selectedStatus, dateRange, sortBy, filteredTransactions])
 
+  // Fungsi untuk mendapatkan status yang benar
+  const getTransactionStatus = (transaction) => {
+    // Jika status pending tapi sudah ada bukti pembayaran
+    if (transaction.status === 'pending' && transaction.proofPaymentUrl) {
+      return statusMap.waiting_confirmation
+    }
+    return statusMap[transaction.status] || statusMap.pending
+  }
+
   if (isLoading) return <LoadingSpinner />
 
   return (
     <Container className="py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-2">Transaksi Saya</h1>
+        <h1 className="mb-2 text-2xl font-bold">Transaksi Saya</h1>
         <p className="text-gray-600">
           Kelola dan pantau status transaksi Anda
         </p>
@@ -172,7 +215,7 @@ export default function Transactions() {
 
       {/* Success Message */}
       {location.state?.message && (
-        <div className="mb-6 p-4 bg-green-50 text-green-700 rounded-lg">
+        <div className="p-4 mb-6 text-green-700 bg-green-50 rounded-lg">
           {location.state.message}
         </div>
       )}
@@ -181,14 +224,14 @@ export default function Transactions() {
       <div className="mb-6 space-y-4">
         <div className="flex gap-4">
           {/* Search */}
-          <div className="flex-1 relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <div className="relative flex-1">
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 w-5 h-5 text-gray-400 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Cari ID Transaksi atau Invoice..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="py-2 pr-4 pl-10 w-full rounded-lg border focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
@@ -196,8 +239,7 @@ export default function Transactions() {
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50 ${
-              showFilters ? 'bg-primary/5 border-primary' : ''
-            }`}
+              showFilters ? 'bg-primary/5 border-primary' : ''}`}
           >
             <FunnelIcon className="w-5 h-5" />
             Filter {showFilters ? 'Aktif' : ''}
@@ -206,15 +248,15 @@ export default function Transactions() {
 
         {/* Extended Filters */}
         {showFilters && (
-          <div className="p-4 border rounded-lg space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-4 space-y-4 rounded-lg border">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {/* Status Filter */}
               <div>
-                <label className="block text-sm font-medium mb-1">Status</label>
+                <label className="block mb-1 text-sm font-medium">Status</label>
                 <select
                   value={selectedStatus}
                   onChange={(e) => setSelectedStatus(e.target.value)}
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="p-2 w-full rounded-lg border focus:outline-none focus:ring-2 focus:ring-primary/20"
                 >
                   {statusOptions.map(option => (
                     <option key={option.value} value={option.value}>
@@ -226,23 +268,23 @@ export default function Transactions() {
 
               {/* Date Range */}
               <div>
-                <label className="block text-sm font-medium mb-1">Dari Tanggal</label>
+                <label className="block mb-1 text-sm font-medium">Dari Tanggal</label>
                 <input
                   type="date"
                   value={dateRange.start}
                   onChange={(e) => handleDateChange('start', e.target.value)}
                   max={dateRange.end || undefined}
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="p-2 w-full rounded-lg border focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Sampai Tanggal</label>
+                <label className="block mb-1 text-sm font-medium">Sampai Tanggal</label>
                 <input
                   type="date"
                   value={dateRange.end}
                   onChange={(e) => handleDateChange('end', e.target.value)}
                   min={dateRange.start || undefined}
-                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="p-2 w-full rounded-lg border focus:outline-none focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
@@ -252,7 +294,7 @@ export default function Transactions() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="p-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-primary/20"
               >
                 <option value="newest">Terbaru</option>
                 <option value="oldest">Terlama</option>
@@ -270,19 +312,19 @@ export default function Transactions() {
 
         {/* Active Filters Summary */}
         {(searchTerm || selectedStatus || dateRange.start || dateRange.end) && (
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex flex-wrap gap-2">
             {searchTerm && (
-              <span className="px-3 py-1 bg-primary/5 rounded-full text-sm">
+              <span className="px-3 py-1 text-sm rounded-full bg-primary/5">
                 Pencarian: {searchTerm}
               </span>
             )}
             {selectedStatus && (
-              <span className="px-3 py-1 bg-primary/5 rounded-full text-sm">
+              <span className="px-3 py-1 text-sm rounded-full bg-primary/5">
                 Status: {statusOptions.find(opt => opt.value === selectedStatus)?.label}
               </span>
             )}
             {(dateRange.start || dateRange.end) && (
-              <span className="px-3 py-1 bg-primary/5 rounded-full text-sm">
+              <span className="px-3 py-1 text-sm rounded-full bg-primary/5">
                 Periode: {dateRange.start ? new Date(dateRange.start).toLocaleDateString('id-ID') : '...'} 
                 s/d 
                 {dateRange.end ? new Date(dateRange.end).toLocaleDateString('id-ID') : '...'}
@@ -295,14 +337,18 @@ export default function Transactions() {
       {/* Transactions List */}
       <div className="space-y-4">
         {paginatedTransactions.length > 0 ? (
-          paginatedTransactions.map(transaction => (
-            <TransactionCard 
-              key={transaction.id} 
-              transaction={transaction}
-            />
-          ))
+          paginatedTransactions.map(transaction => {
+            const status = getTransactionStatus(transaction)
+            
+            return (
+              <TransactionCard 
+                key={transaction.id} 
+                transaction={transaction}
+              />
+            )
+          })
         ) : (
-          <div className="text-center py-8 text-gray-500">
+          <div className="py-8 text-center text-gray-500">
             Tidak ada transaksi ditemukan
           </div>
         )}
@@ -310,7 +356,7 @@ export default function Transactions() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="mt-8 flex justify-center gap-2">
+        <div className="flex gap-2 justify-center mt-8">
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}

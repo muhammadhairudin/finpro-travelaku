@@ -1,11 +1,32 @@
+import React from 'react'
+import { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { UsersIcon, UserPlusIcon, UserGroupIcon } from '@heroicons/react/24/outline'
 import { Bar } from 'react-chartjs-2'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js'
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+)
 
 export default function UserStats({ users }) {
   // Hitung statistik user
-  const totalUsers = users.length
-  const totalAdmins = users.filter(u => u.role === 'admin').length
+  const totalUsers = users?.length || 0
+  const totalAdmins = users?.filter(u => u.role === 'admin').length || 0
   const totalRegularUsers = totalUsers - totalAdmins
 
   // Data untuk chart
@@ -20,6 +41,24 @@ export default function UserStats({ users }) {
         borderWidth: 1,
       }
     ]
+  }
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1
+        }
+      }
+    }
   }
 
   return (
@@ -69,26 +108,10 @@ export default function UserStats({ users }) {
       {/* User Distribution Chart */}
       <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
         <h3 className="mb-3 text-base font-bold text-gray-800">Distribusi Pengguna</h3>
-        <div className="h-[200px]">
+        <div className="h-[200px] relative">
           <Bar 
             data={chartData}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  display: false
-                }
-              },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  ticks: {
-                    stepSize: 1
-                  }
-                }
-              }
-            }}
+            options={chartOptions}
           />
         </div>
       </div>

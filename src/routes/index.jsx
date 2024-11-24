@@ -12,6 +12,7 @@ import PaymentSuccess from '../pages/user/PaymentSuccess'
 import AdminRoute from '../middleware/AdminRoute'
 import About from '../pages/public/About'
 import Documentation from '../pages/public/Documentation/index'
+import Dashboard from '../pages/admin/Dashboard'
 
 export const router = createBrowserRouter([
   {
@@ -25,12 +26,14 @@ export const router = createBrowserRouter([
   },
   {
     path: '/admin',
-    element: (
-      <AdminRoute>
-        <AdminLayout />
-      </AdminRoute>
-    ),
-    children: adminRoutes
+    element: <AdminLayout />,
+    children: [
+      {
+        index: true,
+        element: <Dashboard />
+      },
+      ...adminRoutes
+    ]
   },
   {
     path: '/activities/:id',

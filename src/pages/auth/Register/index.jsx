@@ -1,25 +1,24 @@
+import React from 'react'
 import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { register } from '../../../store/slices/authSlice'
-import { uploadService } from '../../../services/uploadService'
+import { toast } from 'react-hot-toast'
+import Container from '../../../components/common/Container'
 
 export default function Register() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const { isLoading, error } = useSelector((state) => state.auth)
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     passwordRepeat: '',
     phoneNumber: '',
-    profilePictureUrl: '',
-    role: 'user',
+    role: 'admin',
+    profilePictureUrl: ''
   })
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [previewUrl, setPreviewUrl] = useState(null)
-  const [uploadError, setUploadError] = useState(null)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -29,150 +28,164 @@ export default function Register() {
     }))
   }
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setSelectedFile(file)
-      setPreviewUrl(URL.createObjectURL(file))
-      setUploadError(null)
-    }
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     
-    try {
-      // Upload profile picture if selected
-      if (selectedFile) {
-        const uploadResponse = await uploadService.uploadImage(selectedFile)
-        formData.profilePictureUrl = uploadResponse.data.imageUrl
-      }
+    if (!formData.name || !formData.email || !formData.password || !formData.passwordRepeat) {
+      toast.error('Mohon lengkapi data yang diperlukan')
+      return
+    }
 
-      await dispatch(register(formData)).unwrap()
-      navigate('/')
-    } catch (err) {
-      console.error('Failed to register:', err)
-      setUploadError(err.message)
+    if (formData.password !== formData.passwordRepeat) {
+      toast.error('Password tidak cocok')
+      return
+    }
+
+    if (formData.password.length < 6) {
+      toast.error('Password minimal 6 karakter')
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      const registerData = {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        passwordRepeat: formData.passwordRepeat,
+        phoneNumber: formData.phoneNumber || "123456789",
+        role: "admin",
+        profilePictureUrl: ""
+      }
+      
+      await dispatch(register(registerData)).unwrap()
+      toast.success('Registrasi berhasil')
+      navigate('/login')
+    } catch (error) {
+      toast.error(error?.message || 'Terjadi kesalahan saat registrasi')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-8">
-      <h1 className="text-2xl font-serif font-bold text-primary text-center mb-6">
-        Daftar Akun TravelAku
-      </h1>
+    <div className="min-h-screen bg-gray-50">
+      <Container>
+        <div className="max-w-xl mx-auto pt-8">
+          <div className="bg-white rounded-lg shadow-sm p-6 md:p-8">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-serif font-bold text-gray-900 mb-3">
+                Daftar Akun
+              </h1>
+              <p className="text-gray-600 mb-2">
+                Bergabung dengan TravelAku untuk menjelajahi berbagai destinasi menarik!
+              </p>
+              <p className="text-sm text-gray-500">
+                Sudah punya akun?{' '}
+                <Link to="/login" className="text-primary hover:text-primary/80">
+                  Masuk di sini
+                </Link>
+              </p>
+            </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Nama Lengkap
-          </label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-            required
-          />
-        </div>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Nama Lengkap <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  placeholder="Masukkan nama lengkap"
+                  required
+                />
+              </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Email
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-            required
-          />
-        </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  placeholder="Masukkan email"
+                  required
+                />
+              </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-            required
-          />
-        </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  placeholder="Minimal 6 karakter"
+                  required
+                />
+              </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Ulangi Password
-          </label>
-          <input
-            type="password"
-            name="passwordRepeat"
-            value={formData.passwordRepeat}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-            required
-          />
-        </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Ulangi Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="password"
+                  name="passwordRepeat"
+                  value={formData.passwordRepeat}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  placeholder="Masukkan ulang password"
+                  required
+                />
+              </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Nomor Telepon
-          </label>
-          <input
-            type="tel"
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-            required
-          />
-        </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Nomor Telepon
+                </label>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  placeholder="Masukkan nomor telepon"
+                />
+              </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Foto Profil
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="w-full"
-          />
-          {previewUrl && (
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="mt-2 w-24 h-24 object-cover rounded-full"
-            />
-          )}
-        </div>
+              <div className="flex items-start gap-2 mt-6">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  className="mt-1 w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary/20"
+                  required
+                />
+                <label htmlFor="terms" className="text-sm text-gray-500">
+                  Saya setuju dengan <a href="#" className="text-primary hover:underline">Syarat & Ketentuan</a> dan <a href="#" className="text-primary hover:underline">Kebijakan Privasi</a> yang berlaku
+                </label>
+              </div>
 
-        {(error || uploadError) && (
-          <div className="text-sm text-red-500 text-center">
-            {error || uploadError}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full mt-6 px-6 py-3 text-base font-medium text-white bg-primary rounded-lg hover:bg-primary/90 focus:ring-4 focus:ring-primary/20 disabled:opacity-70 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                {isLoading ? 'Mendaftar...' : 'Daftar Sekarang'}
+              </button>
+            </form>
           </div>
-        )}
-
-        <button
-          type="submit"
-          className={`w-full btn btn-primary ${isLoading ? 'loading' : ''}`}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Memproses...' : 'Daftar'}
-        </button>
-      </form>
-
-      <p className="mt-4 text-center text-sm text-gray-600">
-        Sudah punya akun?{' '}
-        <Link to="/login" className="text-primary hover:text-primary/80">
-          Masuk di sini
-        </Link>
-      </p>
+        </div>
+      </Container>
     </div>
   )
 } 

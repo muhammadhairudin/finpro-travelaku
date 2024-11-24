@@ -18,17 +18,17 @@ export default class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center p-8">
-            <h2 className="text-2xl font-serif font-bold text-primary mb-4">
+        <div className="flex justify-center items-center p-4 min-h-screen">
+          <div className="text-center">
+            <h2 className="mb-4 text-2xl font-bold text-gray-900">
               Oops! Terjadi Kesalahan
             </h2>
-            <p className="text-gray-600 mb-4">
+            <p className="mb-6 text-gray-600">
               {this.state.error?.message || 'Silakan coba lagi nanti'}
             </p>
             <button 
               onClick={() => window.location.reload()} 
-              className="btn btn-primary"
+              className="px-6 py-2 text-white rounded-lg transition-colors bg-primary hover:bg-primary/90"
             >
               Muat Ulang
             </button>

@@ -210,7 +210,7 @@ export default function AdminDashboard() {
   if (isLoading) {
     return (
       <Container className="min-h-[80vh] relative">
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="flex absolute inset-0 justify-center items-center">
           <LoadingSpinner />
         </div>
       </Container>
@@ -220,7 +220,7 @@ export default function AdminDashboard() {
   if (error) {
     return (
       <Container className="min-h-[80vh] relative">
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="flex absolute inset-0 justify-center items-center">
           <div className="text-center text-red-500">{error}</div>
         </div>
       </Container>
@@ -231,7 +231,7 @@ export default function AdminDashboard() {
     <Container className="py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-2">Dashboard Admin</h1>
+        <h1 className="mb-2 text-2xl font-bold">Dashboard Admin</h1>
         <p className="text-gray-600">
           Ringkasan data dan statistik
         </p>
@@ -260,36 +260,36 @@ export default function AdminDashboard() {
       </div>
 
       {/* Transaction Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-lg shadow">
+      <div className="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
+        <div className="p-6 bg-white rounded-lg shadow">
           <p className="text-sm text-gray-600">Total Transaksi</p>
-          <p className="text-2xl font-bold mt-2">{stats.totalTransactions}</p>
+          <p className="mt-2 text-2xl font-bold">{stats.totalTransactions}</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="p-6 bg-white rounded-lg shadow">
           <p className="text-sm text-gray-600">Menunggu Konfirmasi</p>
-          <p className="text-2xl font-bold mt-2 text-blue-600">
+          <p className="mt-2 text-2xl font-bold text-blue-600">
             {stats.pendingTransactions}
           </p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="p-6 bg-white rounded-lg shadow">
           <p className="text-sm text-gray-600">Transaksi Sukses</p>
-          <p className="text-2xl font-bold mt-2 text-green-600">
+          <p className="mt-2 text-2xl font-bold text-green-600">
             {stats.successTransactions}
           </p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="p-6 bg-white rounded-lg shadow">
           <p className="text-sm text-gray-600">Total Pendapatan</p>
-          <p className="text-2xl font-bold mt-2 text-primary">
+          <p className="mt-2 text-2xl font-bold text-primary">
             Rp {stats.totalRevenue.toLocaleString('id-ID')}
           </p>
         </div>
       </div>
 
       {/* Transaction Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div className="grid grid-cols-1 gap-8 mb-8 lg:grid-cols-2">
         {/* Revenue Chart */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-bold mb-4">Pendapatan</h3>
+        <div className="p-6 bg-white rounded-lg shadow">
+          <h3 className="mb-4 text-lg font-bold">Pendapatan</h3>
           <Line
             data={{
               labels: stats.revenueChart.labels,
@@ -317,8 +317,8 @@ export default function AdminDashboard() {
         </div>
 
         {/* Transaction Chart */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-bold mb-4">Transaksi</h3>
+        <div className="p-6 bg-white rounded-lg shadow">
+          <h3 className="mb-4 text-lg font-bold">Transaksi</h3>
           <Bar
             data={{
               labels: stats.transactionChart.labels,
@@ -347,24 +347,16 @@ export default function AdminDashboard() {
 
       {/* User Stats */}
       <div className="mb-8">
-        <h2 className="text-xl font-bold mb-6">Statistik Pengguna</h2>
+        <h2 className="mb-6 text-xl font-bold">Statistik Pengguna</h2>
         <UserStats users={users} />
       </div>
 
       {/* Activity Stats */}
       <div className="mb-8">
-        <h2 className="text-xl font-bold mb-6">Statistik Aktivitas</h2>
+        <h2 className="mb-6 text-xl font-bold">Statistik Aktivitas</h2>
         <ActivityStats 
           activities={activities}
           categories={categories}
-        />
-      </div>
-
-      {/* Recent Transactions */}
-      <div className="mb-8">
-        <h2 className="text-xl font-bold mb-6">Transaksi Terbaru</h2>
-        <RecentTransactions 
-          transactions={transactions.slice(0, 5)}
         />
       </div>
     </Container>

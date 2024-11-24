@@ -85,6 +85,17 @@ export const deleteTransaction = createAsyncThunk(
   }
 )
 
+export const uploadProofPayment = createAsyncThunk(
+  'transaction/uploadProof',
+  async ({ transactionId, proofUrl }) => {
+    const response = await api.post(
+      `/api/v1/update-transaction-proof-payment/${transactionId}`,
+      { proofPaymentUrl: proofUrl }
+    )
+    return response.data
+  }
+)
+
 const transactionSlice = createSlice({
   name: 'transaction',
   initialState: {
@@ -154,6 +165,22 @@ const transactionSlice = createSlice({
       .addCase(deleteTransaction.rejected, (state, action) => {
         state.isLoading = false
         state.error = action.payload
+      })
+      // Upload Proof Payment
+      .addCase(uploadProofPayment.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(uploadProofPayment.fulfilled, (state, action) => {
+        state.isLoading = false
+        // Update transaction in state
+        const index = state.transactions.findIndex(t => t.id === action.payload.id)
+        if (index !== -1) {
+          state.transactions[index] = action.payload
+        }
+      })
+      .addCase(uploadProofPayment.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.error.message
       })
   }
 })

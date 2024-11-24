@@ -1,174 +1,90 @@
-import { Link, useLocation, Outlet } from 'react-router-dom'
-import { 
-  HomeIcon, 
-  UsersIcon, 
-  TicketIcon,
-  TagIcon,
-  PhotoIcon,
-  TagIcon as BannerIcon,
-  TicketIcon as PromoIcon,
-  FolderIcon,
-  ArrowLeftOnRectangleIcon,
-  CreditCardIcon
-} from '@heroicons/react/24/outline'
-import { useDispatch, useSelector } from 'react-redux'
-import { clearAuth } from '../store/slices/authSlice'
+import React from 'react'
+import { Outlet, Navigate, Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import Sidebar from '../components/admin/Sidebar'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline'
+import ErrorBoundary from '../components/common/ErrorBoundary'
+import ErrorPage from '../pages/ErrorPage'
 
-const menuItems = [
-  {
-    path: '/admin',
-    label: 'Dashboard',
-    icon: HomeIcon
-  },
-  {
-    path: '/admin/transactions',
-    label: 'Transactions',
-    icon: CreditCardIcon
-  },
-  {
-    path: '/admin/users',
-    label: 'Users',
-    icon: UsersIcon
-  },
-  {
-    path: '/admin/activities',
-    label: 'Activities',
-    icon: TicketIcon
-  },
-  {
-    path: '/admin/categories',
-    label: 'Categories',
-    icon: TagIcon
-  },
-  {
-    path: '/admin/banners',
-    label: 'Banners',
-    icon: BannerIcon
-  },
-  {
-    path: '/admin/promos',
-    label: 'Promos',
-    icon: PromoIcon
-  },
-  {
-    path: '/admin/media',
-    label: 'Media Library',
-    icon: FolderIcon
-  }
-]
+export default function AdminLayout() {
+  const { user, token } = useSelector((state) => state.auth)
 
-export default function AdminLayout({ children }) {
-  const location = useLocation()
-  const dispatch = useDispatch()
-  const { user } = useSelector((state) => state.auth)
-
-  const isActive = (path) => {
-    if (path === '/admin') {
-      return location.pathname === '/admin'
-    }
-    return location.pathname.startsWith(path)
-  }
-
-  const handleLogout = () => {
-    dispatch(clearAuth())
+  // Redirect jika tidak login atau bukan admin
+  if (!token || user?.role !== 'admin') {
+    return <Navigate to="/login" replace />
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navbar */}
-      <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b z-40">
-        <div className="flex items-center justify-between h-full px-4 ml-64">
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-medium">
-              Selamat datang, {user?.name}
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link 
-              to="/" 
-              className="text-gray-600 hover:text-primary transition-colors"
-            >
-              Beranda
-            </Link>
-            <Link 
-              to="/about" 
-              className="text-gray-600 hover:text-primary transition-colors"
-            >
-              About
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 transition-colors"
-            >
-              <ArrowLeftOnRectangleIcon className="w-5 h-5" />
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
-
+    <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <aside className="fixed top-0 left-0 w-64 h-full bg-white border-r z-30">
-        {/* Logo */}
-        <div className="h-16 flex items-center gap-3 px-6 border-b">
-          <img 
-            src="/Logo.svg" 
-            alt="TravelAku Logo"
-            className="w-8 h-8 object-contain"
-          />
-          <div>
-            <h1 className="font-serif text-xl font-bold text-primary">
-              TravelAku
-            </h1>
-            <p className="text-xs text-gray-500">Admin Panel</p>
-          </div>
-        </div>
-
-        {/* Menu */}
-        <nav className="p-4 h-[calc(100vh-4rem-4rem)]">
-          <div className="space-y-1">
-            {menuItems.map((item) => {
-              const Icon = item.icon
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors ${
-                    isActive(item.path)
-                      ? 'bg-primary text-white'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{item.label}</span>
-                </Link>
-              )
-            })}
-          </div>
-        </nav>
-
-        {/* Version Info */}
-        <div className="absolute bottom-0 left-0 right-0 h-16 p-4 border-t bg-white">
-          <div className="text-center">
-            <p className="text-sm font-medium text-gray-900">TravelAku Admin</p>
-            <p className="text-xs text-gray-500">Version 1.0.0</p>
-          </div>
-        </div>
-      </aside>
+      <Sidebar />
 
       {/* Main Content */}
-      <main className="ml-64 pt-16 min-h-screen pb-16">
-        <Outlet />
-      </main>
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Header/Navbar Admin yang Diperbarui */}
+        <header className="sticky top-0 z-10 bg-white border-b transition-shadow duration-300 hover:shadow-md h-[73px]">
+          <div className="flex items-center h-full px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center w-full">
+              {/* Selamat Datang & Nama User */}
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg font-medium text-gray-800">
+                  Selamat datang,{' '}
+                  <span className="font-semibold text-primary">
+                    {user?.name}
+                  </span>
+                </h1>
+              </div>
 
-      {/* Footer */}
-      <footer className="fixed bottom-0 right-0 left-64 h-16 bg-white border-t z-20">
-        <div className="flex items-center justify-center h-full">
-          <p className="text-sm text-gray-600">
-            © 2024 TravelAku. Created with ❤️ by Muhammad Hairudin, SE
-          </p>
-        </div>
-      </footer>
+              {/* Quick Actions */}
+              <div className="flex items-center gap-4">
+                {/* Lihat Website Button */}
+                <Link 
+                  to="/"
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 rounded-lg transition-all duration-300 hover:bg-gray-50 hover:text-primary group"
+                >
+                  <span>Lihat Website</span>
+                  <ArrowTopRightOnSquareIcon className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+
+                {/* Divider */}
+                <div className="h-6 w-px bg-gray-200"></div>
+
+                {/* User Info & Logout */}
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-gray-900">{user?.role}</p>
+                    <p className="text-xs text-gray-500">{user?.email}</p>
+                  </div>
+                  <img 
+                    src={user?.profilePictureUrl || '/default-avatar.png'}
+                    alt={user?.name}
+                    className="w-8 h-8 rounded-full object-cover border border-gray-200"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content Area */}
+        <main className="overflow-x-hidden flex-1 p-4 sm:p-6 lg:p-8">
+          <div className="mx-auto max-w-7xl">
+            <ErrorBoundary fallback={<ErrorPage />}>
+              <Outlet />
+            </ErrorBoundary>
+          </div>
+        </main>
+
+        {/* Footer dengan tinggi yang sama dengan sidebar footer */}
+        <footer className="flex-shrink-0 bg-white border-t h-[60px]">
+          <div className="flex justify-end items-center px-4 h-full sm:px-6 lg:px-8">
+            <div className="text-sm text-gray-500">
+              <p>Created with ❤️ by Muhammad Hairudin</p>
+              <p>Final Project Bootcamp Frontend Dibimbing Batch 19</p>
+            </div>
+          </div>
+        </footer>
+      </div>
     </div>
   )
 } 
